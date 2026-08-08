@@ -147,6 +147,12 @@ export function BookingDetailPage() {
             />
           )}
 
+          {canChange && (
+            <p className="text-sm text-muted-foreground">
+              📧 You'll receive a reminder email 30 minutes before this consultation.
+            </p>
+          )}
+
           {booking.notes && (
             <div className="flex flex-col gap-1">
               <h2 className="text-sm font-semibold">Notes from the client</h2>
