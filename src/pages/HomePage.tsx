@@ -5,7 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 const features = [
   {
     title: 'Find expert HR professionals',
-    description: 'Search, filter, and compare consultants by specialization, rating, and availability.',
+    description:
+      'Search, filter, and compare consultants by specialization, rating, and availability.',
   },
   {
     title: 'Book in seconds',
@@ -13,7 +14,8 @@ const features = [
   },
   {
     title: 'Join automatically',
-    description: 'Every booking creates a Google Meet or Zoom link that is emailed to you instantly.',
+    description:
+      'Every booking creates a Google Meet or Zoom link that is emailed to you instantly.',
   },
 ]
 

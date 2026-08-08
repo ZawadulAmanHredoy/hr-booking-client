@@ -1,8 +1,9 @@
-import { Link, NavLink, Outlet } from 'react-router-dom'
+import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { CalendarCheck } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { useUIStore } from '@/stores/ui'
+import { useAuthStore } from '@/stores/auth'
 
 const navLinks = [
   { to: '/', label: 'Home' },
@@ -12,12 +13,47 @@ const navLinks = [
 
 export function RootLayout() {
   const { mobileNavOpen, setMobileNavOpen } = useUIStore()
+  const user = useAuthStore((s) => s.user)
+  const logout = useAuthStore((s) => s.logout)
+  const navigate = useNavigate()
+
+  function handleLogout() {
+    setMobileNavOpen(false)
+    void logout().then(() => navigate('/'))
+  }
+
+  const authActions = user ? (
+    <>
+      <span className="hidden text-sm font-medium text-muted-foreground sm:inline">
+        {user.firstName}
+      </span>
+      <Button asChild variant="ghost" size="sm">
+        <Link to="/dashboard">Dashboard</Link>
+      </Button>
+      <Button variant="outline" size="sm" onClick={handleLogout}>
+        Log out
+      </Button>
+    </>
+  ) : (
+    <>
+      <Button asChild variant="ghost" size="sm">
+        <Link to="/login">Log in</Link>
+      </Button>
+      <Button asChild size="sm">
+        <Link to="/register">Sign up</Link>
+      </Button>
+    </>
+  )
 
   return (
     <div className="flex min-h-screen flex-col">
       <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
-          <Link to="/" className="flex items-center gap-2 text-lg font-semibold" onClick={() => setMobileNavOpen(false)}>
+          <Link
+            to="/"
+            className="flex items-center gap-2 text-lg font-semibold"
+            onClick={() => setMobileNavOpen(false)}
+          >
             <CalendarCheck className="h-5 w-5 text-primary" />
             <span>HR Booking</span>
           </Link>
@@ -40,14 +76,7 @@ export function RootLayout() {
             ))}
           </nav>
 
-          <div className="hidden items-center gap-2 md:flex">
-            <Button asChild variant="ghost" size="sm">
-              <Link to="/login">Log in</Link>
-            </Button>
-            <Button asChild size="sm">
-              <Link to="/register">Sign up</Link>
-            </Button>
-          </div>
+          <div className="hidden items-center gap-2 md:flex">{authActions}</div>
 
           <button
             type="button"
@@ -66,7 +95,11 @@ export function RootLayout() {
               {mobileNavOpen ? (
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5"
+                />
               )}
             </svg>
           </button>
@@ -92,16 +125,31 @@ export function RootLayout() {
                 </NavLink>
               ))}
               <div className="mt-2 flex gap-2 border-t border-border pt-3">
-                <Button asChild variant="ghost" size="sm" className="flex-1">
-                  <Link to="/login" onClick={() => setMobileNavOpen(false)}>
-                    Log in
-                  </Link>
-                </Button>
-                <Button asChild size="sm" className="flex-1">
-                  <Link to="/register" onClick={() => setMobileNavOpen(false)}>
-                    Sign up
-                  </Link>
-                </Button>
+                {user ? (
+                  <>
+                    <Button asChild variant="ghost" size="sm" className="flex-1">
+                      <Link to="/dashboard" onClick={() => setMobileNavOpen(false)}>
+                        Dashboard
+                      </Link>
+                    </Button>
+                    <Button variant="outline" size="sm" className="flex-1" onClick={handleLogout}>
+                      Log out
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button asChild variant="ghost" size="sm" className="flex-1">
+                      <Link to="/login" onClick={() => setMobileNavOpen(false)}>
+                        Log in
+                      </Link>
+                    </Button>
+                    <Button asChild size="sm" className="flex-1">
+                      <Link to="/register" onClick={() => setMobileNavOpen(false)}>
+                        Sign up
+                      </Link>
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </nav>

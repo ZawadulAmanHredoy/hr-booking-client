@@ -5,6 +5,7 @@ Frontend for the HR consultation booking platform. Built with React 19, TypeScri
 ## Status
 
 Phase 1 (Foundation) — Vite + React + TypeScript scaffold with:
+
 - React Router (data router)
 - TanStack Query provider (server state)
 - Zustand store (client state)
@@ -67,14 +68,14 @@ The dev server runs on `http://localhost:5173` and proxies `/api` and `/health` 
 
 ## Scripts
 
-| Script              | Description                    |
-| ------------------- | ------------------------------ |
-| `npm run dev`       | Start Vite dev server          |
-| `npm run build`     | Type-check + production build  |
-| `npm run preview`   | Preview the production build   |
-| `npm run lint`      | ESLint                         |
-| `npm run typecheck` | TypeScript strict type check   |
-| `npm run format`    | Prettier write                 |
+| Script              | Description                   |
+| ------------------- | ----------------------------- |
+| `npm run dev`       | Start Vite dev server         |
+| `npm run build`     | Type-check + production build |
+| `npm run preview`   | Preview the production build  |
+| `npm run lint`      | ESLint                        |
+| `npm run typecheck` | TypeScript strict type check  |
+| `npm run format`    | Prettier write                |
 
 ## Docker
 

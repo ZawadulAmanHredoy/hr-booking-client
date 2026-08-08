@@ -2,6 +2,12 @@ import { createBrowserRouter } from 'react-router-dom'
 import { RootLayout } from '@/layouts/RootLayout'
 import HomePage from '@/pages/HomePage'
 import NotFoundPage from '@/pages/NotFoundPage'
+import { LoginPage } from '@/pages/LoginPage'
+import { RegisterPage } from '@/pages/RegisterPage'
+import { VerifyEmailPage } from '@/pages/VerifyEmailPage'
+import { ForgotPasswordPage } from '@/pages/ForgotPasswordPage'
+import { ResetPasswordPage } from '@/pages/ResetPasswordPage'
+import { RequireAuth, RedirectIfAuthed } from '@/components/auth/guards'
 import { PlaceholderPage } from '@/components/shared/PlaceholderPage'
 
 export const router = createBrowserRouter([
@@ -10,6 +16,39 @@ export const router = createBrowserRouter([
     element: <RootLayout />,
     children: [
       { index: true, element: <HomePage /> },
+      {
+        path: 'login',
+        element: (
+          <RedirectIfAuthed>
+            <LoginPage />
+          </RedirectIfAuthed>
+        ),
+      },
+      {
+        path: 'register',
+        element: (
+          <RedirectIfAuthed>
+            <RegisterPage />
+          </RedirectIfAuthed>
+        ),
+      },
+      { path: 'verify-email', element: <VerifyEmailPage /> },
+      {
+        path: 'forgot-password',
+        element: (
+          <RedirectIfAuthed>
+            <ForgotPasswordPage />
+          </RedirectIfAuthed>
+        ),
+      },
+      {
+        path: 'reset-password',
+        element: (
+          <RedirectIfAuthed>
+            <ResetPasswordPage />
+          </RedirectIfAuthed>
+        ),
+      },
       {
         path: 'hr',
         element: (
@@ -20,12 +59,20 @@ export const router = createBrowserRouter([
         ),
       },
       {
+        path: 'dashboard',
+        element: (
+          <RequireAuth>
+            <PlaceholderPage
+              title="Dashboard"
+              description="Your bookings, consultations, and account overview."
+            />
+          </RequireAuth>
+        ),
+      },
+      {
         path: 'about',
         element: (
-          <PlaceholderPage
-            title="About"
-            description="Learn more about the HR Booking platform."
-          />
+          <PlaceholderPage title="About" description="Learn more about the HR Booking platform." />
         ),
       },
       { path: '*', element: <NotFoundPage /> },

@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { type InternalAxiosRequestConfig } from 'axios'
 import { apiBase } from '@/lib/env'
 
 export const apiClient = axios.create({
@@ -8,6 +8,41 @@ export const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+})
+
+type SessionExpiredHandler = () => void
+
+let onSessionExpired: SessionExpiredHandler | null = null
+
+export function setSessionExpiredHandler(handler: SessionExpiredHandler): void {
+  onSessionExpired = handler
+}
+
+type RetryableRequestConfig = InternalAxiosRequestConfig & { _retried?: boolean }
+
+apiClient.interceptors.response.use(undefined, async (error: unknown) => {
+  if (!axios.isAxiosError(error) || !error.config || error.response?.status !== 401) {
+    return Promise.reject(error)
+  }
+
+  const original = error.config as RetryableRequestConfig
+  const isRefreshCall = original.url?.includes('/auth/refresh')
+
+  if (!original._retried && !isRefreshCall) {
+    original._retried = true
+    try {
+      await apiClient.post('/auth/refresh')
+      return await apiClient(original)
+    } catch {
+      onSessionExpired?.()
+      return Promise.reject(error)
+    }
+  }
+
+  if (isRefreshCall) {
+    onSessionExpired?.()
+  }
+  return Promise.reject(error)
 })
 
 export interface ApiErrorBody {
