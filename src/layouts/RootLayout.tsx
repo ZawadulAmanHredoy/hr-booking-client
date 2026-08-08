@@ -27,6 +27,11 @@ export function RootLayout() {
       <span className="hidden text-sm font-medium text-muted-foreground sm:inline">
         {user.firstName}
       </span>
+      {user.role === 'HR' && (
+        <Button asChild variant="ghost" size="sm">
+          <Link to="/profile/manage">My profile</Link>
+        </Button>
+      )}
       <Button asChild variant="ghost" size="sm">
         <Link to="/dashboard">Dashboard</Link>
       </Button>
@@ -127,6 +132,13 @@ export function RootLayout() {
               <div className="mt-2 flex gap-2 border-t border-border pt-3">
                 {user ? (
                   <>
+                    {user.role === 'HR' && (
+                      <Button asChild variant="ghost" size="sm" className="flex-1">
+                        <Link to="/profile/manage" onClick={() => setMobileNavOpen(false)}>
+                          My profile
+                        </Link>
+                      </Button>
+                    )}
                     <Button asChild variant="ghost" size="sm" className="flex-1">
                       <Link to="/dashboard" onClick={() => setMobileNavOpen(false)}>
                         Dashboard

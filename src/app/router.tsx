@@ -7,6 +7,10 @@ import { RegisterPage } from '@/pages/RegisterPage'
 import { VerifyEmailPage } from '@/pages/VerifyEmailPage'
 import { ForgotPasswordPage } from '@/pages/ForgotPasswordPage'
 import { ResetPasswordPage } from '@/pages/ResetPasswordPage'
+import { HrDirectoryPage } from '@/pages/HrDirectoryPage'
+import { ProfileDetailPage } from '@/pages/ProfileDetailPage'
+import { ProfileOnboardingPage } from '@/pages/ProfileOnboardingPage'
+import { ProfileManagePage } from '@/pages/ProfileManagePage'
 import { RequireAuth, RedirectIfAuthed } from '@/components/auth/guards'
 import { PlaceholderPage } from '@/components/shared/PlaceholderPage'
 
@@ -49,13 +53,22 @@ export const router = createBrowserRouter([
           </RedirectIfAuthed>
         ),
       },
+      { path: 'hr', element: <HrDirectoryPage /> },
+      { path: 'hr/:id', element: <ProfileDetailPage /> },
       {
-        path: 'hr',
+        path: 'profile',
         element: (
-          <PlaceholderPage
-            title="HR professionals"
-            description="Browse and search verified HR consultants."
-          />
+          <RequireAuth>
+            <ProfileOnboardingPage />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: 'profile/manage',
+        element: (
+          <RequireAuth>
+            <ProfileManagePage />
+          </RequireAuth>
         ),
       },
       {

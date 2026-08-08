@@ -5,4 +5,4 @@ export const env = {
   isDev: import.meta.env.DEV,
 } as const
 
-export const apiBase = env.apiUrl || '/api'
+export const apiBase = env.apiUrl || '/api/v1'
