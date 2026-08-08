@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { FormAlert } from '@/components/auth/FormAlert'
+import { BookingPanel } from '@/components/booking/BookingPanel'
 import { SPECIALIZATION_LABELS } from '@/lib/constants'
 import { formatRate } from '@/lib/format'
 import { getProfile } from '@/services/api/hrProfiles'
@@ -149,12 +150,12 @@ export function ProfileDetailPage() {
               ? 'Currently accepting consultation requests.'
               : 'Currently not accepting new consultations.'}
           </div>
-
-          <Button asChild size="lg" className="sm:w-auto">
-            <Link to="/register">Book a consultation</Link>
-          </Button>
         </CardContent>
       </Card>
+
+      <div className="mt-6">
+        <BookingPanel profile={profile} />
+      </div>
     </section>
   )
 }

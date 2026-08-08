@@ -105,6 +105,9 @@ function ProfileOverview({ profile }: { profile: OwnHRProfile }) {
                 ? 'Mark unavailable'
                 : 'Mark available'}
           </Button>
+          <Button asChild variant="outline">
+            <Link to="/profile/availability">Availability</Link>
+          </Button>
           <Button asChild variant="ghost">
             <Link to="/profile">Edit details</Link>
           </Button>

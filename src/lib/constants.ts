@@ -48,3 +48,64 @@ export const PROFILE_LIMITS = {
   YEARS_MIN: 0,
   YEARS_MAX: 70,
 } as const
+
+export const BOOKING_STATUS = {
+  PENDING: 'PENDING',
+  CONFIRMED: 'CONFIRMED',
+  CANCELLED: 'CANCELLED',
+  COMPLETED: 'COMPLETED',
+  NO_SHOW: 'NO_SHOW',
+} as const
+
+export type BookingStatus = (typeof BOOKING_STATUS)[keyof typeof BOOKING_STATUS]
+
+export const BOOKING_STATUS_LABELS: Record<BookingStatus, string> = {
+  PENDING: 'Pending',
+  CONFIRMED: 'Confirmed',
+  CANCELLED: 'Cancelled',
+  COMPLETED: 'Completed',
+  NO_SHOW: 'No show',
+}
+
+export const MEETING_PROVIDERS = ['GOOGLE_MEET', 'ZOOM'] as const
+
+export type MeetingProvider = (typeof MEETING_PROVIDERS)[number]
+
+export const MEETING_PROVIDER_LABELS: Record<MeetingProvider, string> = {
+  GOOGLE_MEET: 'Google Meet',
+  ZOOM: 'Zoom',
+}
+
+export const SLOT_DURATIONS = [15, 30, 45, 60, 90] as const
+
+export const WEEKDAYS = [
+  { value: 0, label: 'Sunday', short: 'Sun' },
+  { value: 1, label: 'Monday', short: 'Mon' },
+  { value: 2, label: 'Tuesday', short: 'Tue' },
+  { value: 3, label: 'Wednesday', short: 'Wed' },
+  { value: 4, label: 'Thursday', short: 'Thu' },
+  { value: 5, label: 'Friday', short: 'Fri' },
+  { value: 6, label: 'Saturday', short: 'Sat' },
+] as const
+
+export const COMMON_TIMEZONES = [
+  'UTC',
+  'Asia/Dhaka',
+  'Asia/Kolkata',
+  'Asia/Dubai',
+  'Asia/Singapore',
+  'Asia/Tokyo',
+  'Europe/London',
+  'Europe/Berlin',
+  'America/New_York',
+  'America/Chicago',
+  'America/Los_Angeles',
+  'Australia/Sydney',
+] as const
+
+export const BOOKING_LIMITS = {
+  NOTES_MAX: 1000,
+  CANCEL_REASON_MAX: 300,
+  CANCEL_NOTICE_MINUTES: 60,
+  SLOT_WINDOW_DAYS: 14,
+} as const

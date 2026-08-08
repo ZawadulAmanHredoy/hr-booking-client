@@ -33,6 +33,9 @@ export function RootLayout() {
         </Button>
       )}
       <Button asChild variant="ghost" size="sm">
+        <Link to="/dashboard/bookings">Bookings</Link>
+      </Button>
+      <Button asChild variant="ghost" size="sm">
         <Link to="/dashboard">Dashboard</Link>
       </Button>
       <Button variant="outline" size="sm" onClick={handleLogout}>
@@ -139,6 +142,11 @@ export function RootLayout() {
                         </Link>
                       </Button>
                     )}
+                    <Button asChild variant="ghost" size="sm" className="flex-1">
+                      <Link to="/dashboard/bookings" onClick={() => setMobileNavOpen(false)}>
+                        Bookings
+                      </Link>
+                    </Button>
                     <Button asChild variant="ghost" size="sm" className="flex-1">
                       <Link to="/dashboard" onClick={() => setMobileNavOpen(false)}>
                         Dashboard

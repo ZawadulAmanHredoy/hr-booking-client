@@ -11,7 +11,11 @@ import { HrDirectoryPage } from '@/pages/HrDirectoryPage'
 import { ProfileDetailPage } from '@/pages/ProfileDetailPage'
 import { ProfileOnboardingPage } from '@/pages/ProfileOnboardingPage'
 import { ProfileManagePage } from '@/pages/ProfileManagePage'
-import { RequireAuth, RedirectIfAuthed } from '@/components/auth/guards'
+import { AvailabilityPage } from '@/pages/AvailabilityPage'
+import { DashboardPage } from '@/pages/DashboardPage'
+import { BookingsPage } from '@/pages/BookingsPage'
+import { BookingDetailPage } from '@/pages/BookingDetailPage'
+import { RequireAuth, RequireRole, RedirectIfAuthed } from '@/components/auth/guards'
 import { PlaceholderPage } from '@/components/shared/PlaceholderPage'
 
 export const router = createBrowserRouter([
@@ -72,13 +76,34 @@ export const router = createBrowserRouter([
         ),
       },
       {
+        path: 'profile/availability',
+        element: (
+          <RequireRole roles={['HR']}>
+            <AvailabilityPage />
+          </RequireRole>
+        ),
+      },
+      {
         path: 'dashboard',
         element: (
           <RequireAuth>
-            <PlaceholderPage
-              title="Dashboard"
-              description="Your bookings, consultations, and account overview."
-            />
+            <DashboardPage />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: 'dashboard/bookings',
+        element: (
+          <RequireAuth>
+            <BookingsPage />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: 'dashboard/bookings/:id',
+        element: (
+          <RequireAuth>
+            <BookingDetailPage />
           </RequireAuth>
         ),
       },
