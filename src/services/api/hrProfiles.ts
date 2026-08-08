@@ -109,14 +109,10 @@ export async function getProfile(id: string): Promise<HRProfile> {
 }
 
 export async function getMyProfile(): Promise<OwnHRProfile> {
-  try {
-    const res = await apiClient.get<{ success: true; data: { profile: OwnHRProfile } }>(
-      '/profiles/me',
-    )
-    return res.data.data.profile
-  } catch (error) {
-    throw toError(getApiErrorMessage(error, 'Could not load your profile.'), error)
-  }
+  const res = await apiClient.get<{ success: true; data: { profile: OwnHRProfile } }>(
+    '/profiles/me',
+  )
+  return res.data.data.profile
 }
 
 export async function upsertProfile(input: UpsertProfileInput): Promise<UpsertProfileResult> {
