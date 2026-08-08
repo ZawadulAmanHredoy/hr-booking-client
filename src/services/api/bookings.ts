@@ -1,11 +1,21 @@
 import { apiClient, getApiErrorMessage } from './client'
-import type { BookingStatus, Currency, MeetingProvider } from '@/lib/constants'
+import type { BookingStatus, Currency, MeetingProvider, MeetingStatus } from '@/lib/constants'
 import type { Pagination } from './hrProfiles'
 
 export interface BookingParticipant {
   id: string
   firstName: string
   lastName: string
+}
+
+export interface BookingMeeting {
+  provider: MeetingProvider
+  status: MeetingStatus
+  meetingUrl?: string
+  startTime?: string
+  endTime?: string
+  lastError?: string
+  attempts?: number
 }
 
 export interface Booking {
@@ -28,6 +38,8 @@ export interface Booking {
   client?: BookingParticipant
   consultant?: BookingParticipant
   profile?: { id: string; headline: string }
+  meeting: BookingMeeting
+  canRetryMeeting: boolean
   createdAt: string
   updatedAt: string
 }
@@ -102,6 +114,17 @@ export async function cancelBooking(id: string, reason?: string): Promise<Bookin
     return res.data.data.booking
   } catch (error) {
     throw toError(getApiErrorMessage(error, 'Could not cancel this booking.'), error)
+  }
+}
+
+export async function retryMeeting(id: string): Promise<Booking> {
+  try {
+    const res = await apiClient.post<{ success: true; data: { booking: Booking } }>(
+      `/bookings/${id}/meeting/retry`,
+    )
+    return res.data.data.booking
+  } catch (error) {
+    throw toError(getApiErrorMessage(error, 'Could not create the meeting link.'), error)
   }
 }
 

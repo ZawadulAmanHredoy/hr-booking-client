@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { CalendarDays, Clock, User2 } from 'lucide-react'
+import { CalendarDays, Clock, User2, Video } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { BookingStatusBadge } from './BookingStatusBadge'
 import type { Booking } from '@/services/api/bookings'
@@ -49,9 +49,18 @@ export function BookingCard({ booking, timezone, perspective }: BookingCardProps
         <span className="text-sm font-semibold">
           {formatMoney(booking.priceCents, booking.currency)}
         </span>
-        <Button asChild variant="outline" size="sm">
-          <Link to={`/dashboard/bookings/${booking.id}`}>View details</Link>
-        </Button>
+        <div className="flex gap-2">
+          {booking.meeting?.status === 'CREATED' && booking.meeting.meetingUrl && (
+            <Button asChild size="sm">
+              <a href={booking.meeting.meetingUrl} target="_blank" rel="noopener noreferrer">
+                <Video className="h-3.5 w-3.5" /> Join
+              </a>
+            </Button>
+          )}
+          <Button asChild variant="outline" size="sm">
+            <Link to={`/dashboard/bookings/${booking.id}`}>View details</Link>
+          </Button>
+        </div>
       </div>
     </div>
   )

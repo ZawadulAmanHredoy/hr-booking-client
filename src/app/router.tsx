@@ -12,6 +12,7 @@ import { ProfileDetailPage } from '@/pages/ProfileDetailPage'
 import { ProfileOnboardingPage } from '@/pages/ProfileOnboardingPage'
 import { ProfileManagePage } from '@/pages/ProfileManagePage'
 import { AvailabilityPage } from '@/pages/AvailabilityPage'
+import { IntegrationsPage } from '@/pages/IntegrationsPage'
 import { DashboardPage } from '@/pages/DashboardPage'
 import { BookingsPage } from '@/pages/BookingsPage'
 import { BookingDetailPage } from '@/pages/BookingDetailPage'
@@ -80,6 +81,14 @@ export const router = createBrowserRouter([
         element: (
           <RequireRole roles={['HR']}>
             <AvailabilityPage />
+          </RequireRole>
+        ),
+      },
+      {
+        path: 'profile/integrations',
+        element: (
+          <RequireRole roles={['HR']}>
+            <IntegrationsPage />
           </RequireRole>
         ),
       },

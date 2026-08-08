@@ -71,10 +71,22 @@ export const MEETING_PROVIDERS = ['GOOGLE_MEET', 'ZOOM'] as const
 
 export type MeetingProvider = (typeof MEETING_PROVIDERS)[number]
 
+/** Providers a client can actually pick today. Zoom stays in the type for stored bookings. */
+export const BOOKABLE_MEETING_PROVIDERS = ['GOOGLE_MEET'] as const
+
 export const MEETING_PROVIDER_LABELS: Record<MeetingProvider, string> = {
   GOOGLE_MEET: 'Google Meet',
   ZOOM: 'Zoom',
 }
+
+export const MEETING_STATUS = {
+  PENDING: 'PENDING',
+  CREATED: 'CREATED',
+  FAILED: 'FAILED',
+  CANCELLED: 'CANCELLED',
+} as const
+
+export type MeetingStatus = (typeof MEETING_STATUS)[keyof typeof MEETING_STATUS]
 
 export const SLOT_DURATIONS = [15, 30, 45, 60, 90] as const
 

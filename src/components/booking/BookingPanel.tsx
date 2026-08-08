@@ -14,8 +14,8 @@ import type { Slot } from '@/services/api/availability'
 import type { HRProfile } from '@/services/api/hrProfiles'
 import { useAuthStore } from '@/stores/auth'
 import {
+  BOOKABLE_MEETING_PROVIDERS,
   BOOKING_LIMITS,
-  MEETING_PROVIDERS,
   MEETING_PROVIDER_LABELS,
   type MeetingProvider,
 } from '@/lib/constants'
@@ -148,12 +148,15 @@ export function BookingPanel({ profile }: { profile: HRProfile }) {
                 value={provider}
                 onChange={(event) => setProvider(event.target.value as MeetingProvider)}
               >
-                {MEETING_PROVIDERS.map((value) => (
+                {BOOKABLE_MEETING_PROVIDERS.map((value) => (
                   <option key={value} value={value}>
                     {MEETING_PROVIDER_LABELS[value]}
                   </option>
                 ))}
               </Select>
+              <p className="text-xs text-muted-foreground">
+                The joining link is emailed to you once the booking is confirmed.
+              </p>
             </div>
 
             <div className="flex flex-col gap-2">

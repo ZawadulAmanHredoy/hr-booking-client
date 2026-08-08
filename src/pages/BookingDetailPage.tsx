@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link, useParams } from 'react-router-dom'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Video } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
@@ -10,7 +10,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { FormAlert } from '@/components/auth/FormAlert'
 import { BookingStatusBadge } from '@/components/booking/BookingStatusBadge'
 import { SlotPicker } from '@/components/booking/SlotPicker'
-import { cancelBooking, getBooking, rescheduleBooking } from '@/services/api/bookings'
+import { cancelBooking, getBooking, rescheduleBooking, retryMeeting } from '@/services/api/bookings'
 import type { Booking } from '@/services/api/bookings'
 import { useAuthStore } from '@/stores/auth'
 import { BOOKING_LIMITS, MEETING_PROVIDER_LABELS } from '@/lib/constants'
@@ -59,6 +59,11 @@ export function BookingDetailPage() {
     onSuccess: onChanged,
   })
 
+  const retryMutation = useMutation({
+    mutationFn: () => retryMeeting(id),
+    onSuccess: (updated) => queryClient.setQueryData(['booking', id], updated),
+  })
+
   if (isLoading) {
     return (
       <section className="mx-auto max-w-3xl px-4 py-10">
@@ -87,7 +92,7 @@ export function BookingDetailPage() {
   const counterpart = isConsultant ? booking.client : booking.consultant
   const isActive = booking.status === 'CONFIRMED' || booking.status === 'PENDING'
   const canChange = isActive && !isPast(booking.startAt)
-  const mutationError = cancelMutation.error ?? rescheduleMutation.error
+  const mutationError = cancelMutation.error ?? rescheduleMutation.error ?? retryMutation.error
 
   return (
     <section className="mx-auto max-w-3xl px-4 py-10">
@@ -128,14 +133,19 @@ export function BookingDetailPage() {
             <Detail label="Fee">{formatMoney(booking.priceCents, booking.currency)}</Detail>
             <Detail label="Meeting platform">
               {MEETING_PROVIDER_LABELS[booking.meetingProvider]}
-              <span className="block text-xs text-muted-foreground">
-                The joining link is sent by email once meeting integration is enabled.
-              </span>
             </Detail>
             <Detail label="Booking reference">
               <span className="font-mono text-sm">{booking.id}</span>
             </Detail>
           </dl>
+
+          {isActive && (
+            <MeetingSection
+              booking={booking}
+              onRetry={() => retryMutation.mutate()}
+              isRetrying={retryMutation.isPending}
+            />
+          )}
 
           {booking.notes && (
             <div className="flex flex-col gap-1">
@@ -240,6 +250,53 @@ function BackLink() {
         <ArrowLeft className="h-4 w-4" /> Back to bookings
       </Link>
     </Button>
+  )
+}
+
+function MeetingSection({
+  booking,
+  onRetry,
+  isRetrying,
+}: {
+  booking: Booking
+  onRetry: () => void
+  isRetrying: boolean
+}) {
+  const { meeting } = booking
+
+  if (meeting.status === 'CREATED' && meeting.meetingUrl) {
+    return (
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-emerald-600/30 bg-emerald-50 p-4">
+        <div className="flex flex-col">
+          <span className="flex items-center gap-2 text-sm font-medium text-emerald-800">
+            <Video className="h-4 w-4" />
+            {MEETING_PROVIDER_LABELS[meeting.provider]} link is ready
+          </span>
+          <span className="text-xs text-emerald-700">The invite is also in your calendar.</span>
+        </div>
+        <Button asChild>
+          <a href={meeting.meetingUrl} target="_blank" rel="noopener noreferrer">
+            Join meeting
+          </a>
+        </Button>
+      </div>
+    )
+  }
+
+  return (
+    <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border bg-muted p-4">
+      <div className="flex flex-col">
+        <span className="text-sm font-medium">Meeting link not created yet</span>
+        <span className="text-xs text-muted-foreground">
+          {meeting.lastError ?? 'The consultant still needs to connect their calendar.'}
+        </span>
+      </div>
+      {booking.canRetryMeeting && (
+        <Button variant="outline" disabled={isRetrying} onClick={onRetry}>
+          {isRetrying ? 'Creating…' : 'Create link now'}
+        </Button>
+      )}
+    </div>
   )
 }
 

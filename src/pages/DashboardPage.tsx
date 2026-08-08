@@ -1,13 +1,14 @@
 import { useState, type ReactNode } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { Link } from 'react-router-dom'
-import { CalendarClock, CalendarRange, Clock3, Settings2 } from 'lucide-react'
+import { CalendarClock, CalendarRange, Clock3, Settings2, Video } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { FormAlert } from '@/components/auth/FormAlert'
 import { BookingCard } from '@/components/booking/BookingCard'
 import { listBookings } from '@/services/api/bookings'
+import { getIntegrations } from '@/services/api/integrations'
 import { useAuthStore } from '@/stores/auth'
 import { browserTimezone, formatDateTime, minutesUntil } from '@/lib/datetime'
 
@@ -20,6 +21,12 @@ export function DashboardPage() {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ['bookings', role, 'upcoming'],
     queryFn: () => listBookings({ role, scope: 'upcoming', limit: 5 }),
+  })
+
+  const { data: integrations } = useQuery({
+    queryKey: ['integrations'],
+    queryFn: getIntegrations,
+    enabled: isConsultant,
   })
 
   const next = data?.data[0]
@@ -37,7 +44,23 @@ export function DashboardPage() {
         </p>
       </div>
 
-      <div className="mb-6 grid gap-4 sm:grid-cols-3">
+      {isConsultant && integrations && integrations.configured && !integrations.connected && (
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-amber-300 bg-amber-50 p-4">
+          <div className="flex flex-col">
+            <span className="text-sm font-medium text-amber-900">
+              Your calendar is not connected
+            </span>
+            <span className="text-sm text-amber-800">
+              Connect Google Calendar so every booking gets a Meet link automatically.
+            </span>
+          </div>
+          <Button asChild variant="outline">
+            <Link to="/profile/integrations">Connect</Link>
+          </Button>
+        </div>
+      )}
+
+      <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <QuickLink
           to="/dashboard/bookings"
           icon={<CalendarRange className="h-5 w-5 text-primary" />}
@@ -51,6 +74,12 @@ export function DashboardPage() {
               icon={<Clock3 className="h-5 w-5 text-primary" />}
               title="Availability"
               description="Set the hours clients can book."
+            />
+            <QuickLink
+              to="/profile/integrations"
+              icon={<Video className="h-5 w-5 text-primary" />}
+              title="Integrations"
+              description="Connect Google Meet."
             />
             <QuickLink
               to="/profile/manage"
