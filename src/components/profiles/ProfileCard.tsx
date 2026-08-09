@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/card'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { formatRate } from '@/lib/format'
-import { SPECIALIZATION_LABELS } from '@/lib/constants'
+import { useSpecializations, specializationLabel } from '@/hooks/useSpecializations'
 import type { HRProfile } from '@/services/api/hrProfiles'
 import { cn } from '@/lib/utils'
 
@@ -19,6 +19,7 @@ function initials(firstName: string, lastName: string): string {
 }
 
 export function ProfileCard({ profile }: { profile: HRProfile }) {
+  const { data: specializations } = useSpecializations()
   const fullName = profile.user
     ? `${profile.user.firstName} ${profile.user.lastName}`
     : 'HR Professional'
@@ -55,7 +56,7 @@ export function ProfileCard({ profile }: { profile: HRProfile }) {
         <div className="flex flex-wrap gap-1.5">
           {profile.specializations.slice(0, 3).map((spec) => (
             <Badge key={spec} variant="secondary">
-              {SPECIALIZATION_LABELS[spec]}
+              {specializationLabel(spec, specializations)}
             </Badge>
           ))}
         </div>

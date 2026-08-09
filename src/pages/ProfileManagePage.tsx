@@ -7,12 +7,14 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { FormAlert } from '@/components/auth/FormAlert'
-import { PROFILE_STATUS, SPECIALIZATION_LABELS } from '@/lib/constants'
+import { useSpecializations, specializationLabel } from '@/hooks/useSpecializations'
+import { PROFILE_STATUS, PROFILE_STATUS_LABELS } from '@/lib/constants'
 import { formatRate } from '@/lib/format'
 import {
   getMyProfile,
   setAvailability,
-  setProfileStatus,
+  submitProfile,
+  withdrawProfile,
   type OwnHRProfile,
 } from '@/services/api/hrProfiles'
 import { useAuthStore } from '@/stores/auth'
@@ -21,9 +23,17 @@ import { cn } from '@/lib/utils'
 function ProfileOverview({ profile }: { profile: OwnHRProfile }) {
   const queryClient = useQueryClient()
   const fullName = useAuthStore((s) => s.user)
+  const { data: specializations } = useSpecializations()
 
-  const statusMutation = useMutation({
-    mutationFn: (status: OwnHRProfile['status']) => setProfileStatus(status),
+  const submitMutation = useMutation({
+    mutationFn: submitProfile,
+    onSuccess: (updated) => {
+      queryClient.setQueryData(['my-profile'], updated)
+    },
+  })
+
+  const withdrawMutation = useMutation({
+    mutationFn: withdrawProfile,
     onSuccess: (updated) => {
       queryClient.setQueryData(['my-profile'], updated)
     },
@@ -64,24 +74,38 @@ function ProfileOverview({ profile }: { profile: OwnHRProfile }) {
           </div>
         </div>
         <Badge variant={profile.status === PROFILE_STATUS.PUBLISHED ? 'default' : 'secondary'}>
-          {profile.status === PROFILE_STATUS.PUBLISHED ? 'Published' : 'Draft'}
+          {PROFILE_STATUS_LABELS[profile.status]}
         </Badge>
       </CardHeader>
       <CardContent className="flex flex-col gap-5">
-        {(statusMutation.isError || availabilityMutation.isError) && (
+        {(submitMutation.isError || withdrawMutation.isError || availabilityMutation.isError) && (
           <FormAlert variant="error">
-            {statusMutation.error instanceof Error
-              ? statusMutation.error.message
-              : availabilityMutation.error instanceof Error
-                ? availabilityMutation.error.message
-                : 'Something went wrong.'}
+            {submitMutation.error instanceof Error
+              ? submitMutation.error.message
+              : withdrawMutation.error instanceof Error
+                ? withdrawMutation.error.message
+                : availabilityMutation.error instanceof Error
+                  ? availabilityMutation.error.message
+                  : 'Something went wrong.'}
           </FormAlert>
+        )}
+
+        {profile.status === PROFILE_STATUS.REJECTED && profile.rejectionReason && (
+          <FormAlert variant="error">
+            A reviewer sent this back: {profile.rejectionReason}
+          </FormAlert>
+        )}
+
+        {profile.status === PROFILE_STATUS.PENDING_REVIEW && (
+          <p className="text-sm text-muted-foreground">
+            Your profile is waiting for an admin to review it before it goes live.
+          </p>
         )}
 
         <div className="flex flex-wrap gap-2">
           {profile.specializations.map((spec) => (
             <Badge key={spec} variant="secondary">
-              {SPECIALIZATION_LABELS[spec]}
+              {specializationLabel(spec, specializations)}
             </Badge>
           ))}
         </div>
@@ -96,23 +120,26 @@ function ProfileOverview({ profile }: { profile: OwnHRProfile }) {
         </div>
 
         <div className="flex flex-wrap gap-3 border-t pt-5">
-          <Button
-            variant={profile.status === PROFILE_STATUS.PUBLISHED ? 'outline' : 'default'}
-            disabled={statusMutation.isPending}
-            onClick={() =>
-              statusMutation.mutate(
-                profile.status === PROFILE_STATUS.PUBLISHED
-                  ? PROFILE_STATUS.DRAFT
-                  : PROFILE_STATUS.PUBLISHED,
-              )
-            }
-          >
-            {statusMutation.isPending
-              ? 'Updating…'
-              : profile.status === PROFILE_STATUS.PUBLISHED
-                ? 'Unpublish profile'
-                : 'Publish profile'}
-          </Button>
+          {(profile.status === PROFILE_STATUS.DRAFT ||
+            profile.status === PROFILE_STATUS.REJECTED) && (
+            <Button disabled={submitMutation.isPending} onClick={() => submitMutation.mutate()}>
+              {submitMutation.isPending ? 'Submitting…' : 'Submit for review'}
+            </Button>
+          )}
+          {(profile.status === PROFILE_STATUS.PENDING_REVIEW ||
+            profile.status === PROFILE_STATUS.PUBLISHED) && (
+            <Button
+              variant="outline"
+              disabled={withdrawMutation.isPending}
+              onClick={() => withdrawMutation.mutate()}
+            >
+              {withdrawMutation.isPending
+                ? 'Updating…'
+                : profile.status === PROFILE_STATUS.PUBLISHED
+                  ? 'Unpublish profile'
+                  : 'Withdraw submission'}
+            </Button>
+          )}
           <Button
             variant="outline"
             disabled={availabilityMutation.isPending}

@@ -11,14 +11,8 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { FormAlert } from '@/components/auth/FormAlert'
 import { ImageUpload } from '@/components/shared/ImageUpload'
 import { cn } from '@/lib/utils'
-import {
-  CURRENCIES,
-  PROFILE_LIMITS,
-  SPECIALIZATION_LABELS,
-  SPECIALIZATIONS,
-  type Currency,
-  type Specialization,
-} from '@/lib/constants'
+import { useSpecializations } from '@/hooks/useSpecializations'
+import { CURRENCIES, PROFILE_LIMITS, type Currency, type Specialization } from '@/lib/constants'
 import {
   getMyProfile,
   upsertProfile,
@@ -113,6 +107,7 @@ function ProfileForm({
       : [emptyRow()],
   )
   const [error, setError] = useState<string | null>(null)
+  const { data: specializations } = useSpecializations()
 
   const mutation = useMutation({
     mutationFn: (input: UpsertProfileInput) => upsertProfile(input),
@@ -239,13 +234,13 @@ function ProfileForm({
       <div className="flex flex-col gap-2">
         <Label>Specializations (1–5)</Label>
         <div className="flex flex-wrap gap-2">
-          {SPECIALIZATIONS.map((spec) => {
-            const selected = form.specializations.includes(spec)
+          {specializations?.map((spec) => {
+            const selected = form.specializations.includes(spec.slug)
             return (
               <button
-                key={spec}
+                key={spec.slug}
                 type="button"
-                onClick={() => toggleSpecialization(spec)}
+                onClick={() => toggleSpecialization(spec.slug)}
                 className={cn(
                   'rounded-full border px-3 py-1.5 text-sm font-medium transition-colors',
                   selected
@@ -253,7 +248,7 @@ function ProfileForm({
                     : 'border-border bg-background text-muted-foreground hover:border-primary/50',
                 )}
               >
-                {SPECIALIZATION_LABELS[spec]}
+                {spec.name}
               </button>
             )
           })}

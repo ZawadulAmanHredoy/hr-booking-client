@@ -45,6 +45,7 @@ export interface HRProfile {
 
 export interface OwnHRProfile extends Omit<HRProfile, 'user'> {
   status: ProfileStatus
+  rejectionReason?: string
   updatedAt: string
 }
 
@@ -139,15 +140,25 @@ export async function upsertProfile(input: UpsertProfileInput): Promise<UpsertPr
   }
 }
 
-export async function setProfileStatus(status: ProfileStatus): Promise<OwnHRProfile> {
+export async function submitProfile(): Promise<OwnHRProfile> {
   try {
     const res = await apiClient.patch<{ success: true; data: { profile: OwnHRProfile } }>(
-      '/profiles/me/publish',
-      { status },
+      '/profiles/me/submit',
     )
     return res.data.data.profile
   } catch (error) {
-    throw toError(getApiErrorMessage(error, 'Could not update your profile status.'), error)
+    throw toError(getApiErrorMessage(error, 'Could not submit your profile for review.'), error)
+  }
+}
+
+export async function withdrawProfile(): Promise<OwnHRProfile> {
+  try {
+    const res = await apiClient.patch<{ success: true; data: { profile: OwnHRProfile } }>(
+      '/profiles/me/withdraw',
+    )
+    return res.data.data.profile
+  } catch (error) {
+    throw toError(getApiErrorMessage(error, 'Could not withdraw your profile.'), error)
   }
 }
 

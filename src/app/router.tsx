@@ -1,5 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom'
 import { RootLayout } from '@/layouts/RootLayout'
+import { AdminLayout } from '@/layouts/AdminLayout'
 import HomePage from '@/pages/HomePage'
 import NotFoundPage from '@/pages/NotFoundPage'
 import { LoginPage } from '@/pages/LoginPage'
@@ -16,6 +17,14 @@ import { AvailabilityPage } from '@/pages/AvailabilityPage'
 import { IntegrationsPage } from '@/pages/IntegrationsPage'
 import { BookingsPage } from '@/pages/BookingsPage'
 import { BookingDetailPage } from '@/pages/BookingDetailPage'
+import { AdminDashboardPage } from '@/pages/admin/AdminDashboardPage'
+import { AdminUsersPage } from '@/pages/admin/AdminUsersPage'
+import { AdminHrProfilesPage } from '@/pages/admin/AdminHrProfilesPage'
+import { AdminBookingsPage } from '@/pages/admin/AdminBookingsPage'
+import { AdminSpecializationsPage } from '@/pages/admin/AdminSpecializationsPage'
+import { AdminReportsPage } from '@/pages/admin/AdminReportsPage'
+import { AdminAuditLogsPage } from '@/pages/admin/AdminAuditLogsPage'
+import { AdminSettingsPage } from '@/pages/admin/AdminSettingsPage'
 import { RequireAuth, RequireRole, RedirectIfAuthed } from '@/components/auth/guards'
 import { PlaceholderPage } from '@/components/shared/PlaceholderPage'
 
@@ -121,6 +130,24 @@ export const router = createBrowserRouter([
         element: (
           <PlaceholderPage title="About" description="Learn more about the HR Booking platform." />
         ),
+      },
+      {
+        path: 'admin',
+        element: (
+          <RequireRole roles={['ADMIN', 'SUPER_ADMIN']}>
+            <AdminLayout />
+          </RequireRole>
+        ),
+        children: [
+          { index: true, element: <AdminDashboardPage /> },
+          { path: 'users', element: <AdminUsersPage /> },
+          { path: 'hr', element: <AdminHrProfilesPage /> },
+          { path: 'bookings', element: <AdminBookingsPage /> },
+          { path: 'specializations', element: <AdminSpecializationsPage /> },
+          { path: 'reports', element: <AdminReportsPage /> },
+          { path: 'audit-logs', element: <AdminAuditLogsPage /> },
+          { path: 'settings', element: <AdminSettingsPage /> },
+        ],
       },
       { path: '*', element: <NotFoundPage /> },
     ],

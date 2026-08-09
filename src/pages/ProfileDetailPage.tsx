@@ -9,9 +9,11 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { FormAlert } from '@/components/auth/FormAlert'
 import { BookingPanel } from '@/components/booking/BookingPanel'
-import { SPECIALIZATION_LABELS } from '@/lib/constants'
+import { ReportProfileButton } from '@/components/profiles/ReportProfileButton'
+import { useSpecializations, specializationLabel } from '@/hooks/useSpecializations'
 import { formatRate } from '@/lib/format'
 import { getProfile } from '@/services/api/hrProfiles'
+import { useAuthStore } from '@/stores/auth'
 import { cn } from '@/lib/utils'
 
 function initials(firstName?: string, lastName?: string): string {
@@ -20,6 +22,8 @@ function initials(firstName?: string, lastName?: string): string {
 
 export function ProfileDetailPage() {
   const { id = '' } = useParams<{ id: string }>()
+  const currentUser = useAuthStore((s) => s.user)
+  const { data: specializations } = useSpecializations()
 
   const {
     data: profile,
@@ -97,7 +101,7 @@ export function ProfileDetailPage() {
             <div className="mt-2 flex flex-wrap gap-2">
               {profile.specializations.map((spec) => (
                 <Badge key={spec} variant="secondary">
-                  {SPECIALIZATION_LABELS[spec]}
+                  {specializationLabel(spec, specializations)}
                 </Badge>
               ))}
             </div>
@@ -182,6 +186,10 @@ export function ProfileDetailPage() {
               ? 'Currently accepting consultation requests.'
               : 'Currently not accepting new consultations.'}
           </div>
+
+          {currentUser && currentUser.id !== profile.user?.id && (
+            <ReportProfileButton profileId={profile.id} />
+          )}
         </CardContent>
       </Card>
 

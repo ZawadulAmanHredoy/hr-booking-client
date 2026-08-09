@@ -8,7 +8,8 @@ import { Select } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
 import { FormAlert } from '@/components/auth/FormAlert'
 import { ProfileCard } from '@/components/profiles/ProfileCard'
-import { SPECIALIZATION_LABELS, SPECIALIZATIONS, type Specialization } from '@/lib/constants'
+import { useSpecializations } from '@/hooks/useSpecializations'
+import type { Specialization } from '@/lib/constants'
 import { listProfiles } from '@/services/api/hrProfiles'
 
 const LIMIT = 12
@@ -38,6 +39,7 @@ export function HrDirectoryPage() {
 
   const [searchInput, setSearchInput] = useState(searchParam)
   const debouncedSearch = useDebouncedValue(searchInput)
+  const { data: specializations } = useSpecializations()
 
   useEffect(() => {
     const next = new URLSearchParams(searchParams)
@@ -104,9 +106,9 @@ export function HrDirectoryPage() {
           onChange={(e) => updateParam('specialization', e.target.value || null)}
         >
           <option value="">All specializations</option>
-          {SPECIALIZATIONS.map((spec) => (
-            <option key={spec} value={spec}>
-              {SPECIALIZATION_LABELS[spec]}
+          {specializations?.map((spec) => (
+            <option key={spec.slug} value={spec.slug}>
+              {spec.name}
             </option>
           ))}
         </Select>

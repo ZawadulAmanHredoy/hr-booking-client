@@ -9,14 +9,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { FormAlert } from '@/components/auth/FormAlert'
 import { ImageUpload } from '@/components/shared/ImageUpload'
 import { cn } from '@/lib/utils'
-import {
-  CURRENCIES,
-  PROFILE_LIMITS,
-  SPECIALIZATION_LABELS,
-  SPECIALIZATIONS,
-  type Currency,
-  type Specialization,
-} from '@/lib/constants'
+import { useSpecializations } from '@/hooks/useSpecializations'
+import { CURRENCIES, PROFILE_LIMITS, type Currency, type Specialization } from '@/lib/constants'
 import { registerHr, type WorkHistoryEntryInput } from '@/services/api/auth'
 
 interface WorkHistoryRow extends WorkHistoryEntryInput {
@@ -52,6 +46,7 @@ export function JoinAsHrPage() {
   const [error, setError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
   const [done, setDone] = useState(false)
+  const { data: specializationOptions } = useSpecializations()
 
   function toggleSpecialization(spec: Specialization) {
     setSpecializations((prev) => {
@@ -297,13 +292,13 @@ export function JoinAsHrPage() {
             <div className="flex flex-col gap-2">
               <Label>Specializations (1–5)</Label>
               <div className="flex flex-wrap gap-2">
-                {SPECIALIZATIONS.map((spec) => {
-                  const selected = specializations.includes(spec)
+                {specializationOptions?.map((spec) => {
+                  const selected = specializations.includes(spec.slug)
                   return (
                     <button
-                      key={spec}
+                      key={spec.slug}
                       type="button"
-                      onClick={() => toggleSpecialization(spec)}
+                      onClick={() => toggleSpecialization(spec.slug)}
                       className={cn(
                         'rounded-full border px-3 py-1.5 text-sm font-medium transition-colors',
                         selected
@@ -311,7 +306,7 @@ export function JoinAsHrPage() {
                           : 'border-border bg-background text-muted-foreground hover:border-primary/50',
                       )}
                     >
-                      {SPECIALIZATION_LABELS[spec]}
+                      {spec.name}
                     </button>
                   )
                 })}

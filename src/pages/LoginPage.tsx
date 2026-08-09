@@ -11,7 +11,7 @@ export function LoginPage() {
   const login = useAuthStore((s) => s.login)
   const navigate = useNavigate()
   const location = useLocation()
-  const from = (location.state as { from?: string } | null)?.from ?? '/'
+  const from = (location.state as { from?: string } | null)?.from
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -23,8 +23,9 @@ export function LoginPage() {
     setError(null)
     setSubmitting(true)
     try {
-      await login({ email, password })
-      navigate(from, { replace: true })
+      const user = await login({ email, password })
+      const isAdmin = user.role === 'ADMIN' || user.role === 'SUPER_ADMIN'
+      navigate(from ?? (isAdmin ? '/admin' : '/'), { replace: true })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed.')
     } finally {

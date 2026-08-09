@@ -1,37 +1,29 @@
-export const SPECIALIZATIONS = [
-  'RECRUITMENT',
-  'COMPENSATION_BENEFITS',
-  'EMPLOYEE_RELATIONS',
-  'PERFORMANCE_MANAGEMENT',
-  'TRAINING_DEVELOPMENT',
-  'HR_OPERATIONS',
-  'LABOR_LAW_COMPLIANCE',
-  'ORGANIZATIONAL_DEVELOPMENT',
-  'HRIS',
-  'DIVERSITY_INCLUSION',
-] as const
-
-export type Specialization = (typeof SPECIALIZATIONS)[number]
-
-export const SPECIALIZATION_LABELS: Record<Specialization, string> = {
-  RECRUITMENT: 'Recruitment & Talent',
-  COMPENSATION_BENEFITS: 'Compensation & Benefits',
-  EMPLOYEE_RELATIONS: 'Employee Relations',
-  PERFORMANCE_MANAGEMENT: 'Performance Management',
-  TRAINING_DEVELOPMENT: 'Training & Development',
-  HR_OPERATIONS: 'HR Operations',
-  LABOR_LAW_COMPLIANCE: 'Labor Law & Compliance',
-  ORGANIZATIONAL_DEVELOPMENT: 'Organizational Development',
-  HRIS: 'HRIS & Technology',
-  DIVERSITY_INCLUSION: 'Diversity & Inclusion',
-}
+// Specialization slugs are admin-managed and fetched from the API (see
+// `services/api/specializations.ts` / `hooks/useSpecializations.ts`) rather than hardcoded here.
+export type Specialization = string
 
 export const PROFILE_STATUS = {
   DRAFT: 'DRAFT',
+  PENDING_REVIEW: 'PENDING_REVIEW',
   PUBLISHED: 'PUBLISHED',
+  REJECTED: 'REJECTED',
 } as const
 
 export type ProfileStatus = (typeof PROFILE_STATUS)[keyof typeof PROFILE_STATUS]
+
+export const PROFILE_STATUS_LABELS: Record<ProfileStatus, string> = {
+  DRAFT: 'Draft',
+  PENDING_REVIEW: 'Pending review',
+  PUBLISHED: 'Published',
+  REJECTED: 'Changes needed',
+}
+
+export const USER_STATUS = {
+  ACTIVE: 'ACTIVE',
+  SUSPENDED: 'SUSPENDED',
+} as const
+
+export type UserStatus = (typeof USER_STATUS)[keyof typeof USER_STATUS]
 
 export const CURRENCIES = ['USD', 'EUR', 'GBP', 'BDT', 'INR', 'CAD', 'AUD'] as const
 
@@ -115,6 +107,24 @@ export const COMMON_TIMEZONES = [
   'America/Los_Angeles',
   'Australia/Sydney',
 ] as const
+
+export const REPORT_REASONS = [
+  'INAPPROPRIATE_CONTENT',
+  'MISLEADING_INFO',
+  'SPAM',
+  'HARASSMENT',
+  'OTHER',
+] as const
+
+export type ReportReason = (typeof REPORT_REASONS)[number]
+
+export const REPORT_REASON_LABELS: Record<ReportReason, string> = {
+  INAPPROPRIATE_CONTENT: 'Inappropriate content',
+  MISLEADING_INFO: 'Misleading information',
+  SPAM: 'Spam',
+  HARASSMENT: 'Harassment',
+  OTHER: 'Other',
+}
 
 export const BOOKING_LIMITS = {
   NOTES_MAX: 1000,

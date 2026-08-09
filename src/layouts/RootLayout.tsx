@@ -22,6 +22,8 @@ export function RootLayout() {
     void logout().then(() => navigate('/'))
   }
 
+  const isAdmin = user?.role === 'ADMIN' || user?.role === 'SUPER_ADMIN'
+
   const authActions = user ? (
     <>
       <span className="hidden text-sm font-medium text-muted-foreground sm:inline">
@@ -32,9 +34,15 @@ export function RootLayout() {
           <Link to="/profile/manage">My profile</Link>
         </Button>
       )}
-      <Button asChild variant="ghost" size="sm">
-        <Link to="/dashboard/bookings">Bookings</Link>
-      </Button>
+      {isAdmin ? (
+        <Button asChild variant="ghost" size="sm">
+          <Link to="/admin">Admin</Link>
+        </Button>
+      ) : (
+        <Button asChild variant="ghost" size="sm">
+          <Link to="/dashboard/bookings">Bookings</Link>
+        </Button>
+      )}
       <Button variant="outline" size="sm" onClick={handleLogout}>
         Log out
       </Button>
@@ -142,11 +150,19 @@ export function RootLayout() {
                         </Link>
                       </Button>
                     )}
-                    <Button asChild variant="ghost" size="sm" className="flex-1">
-                      <Link to="/dashboard/bookings" onClick={() => setMobileNavOpen(false)}>
-                        Bookings
-                      </Link>
-                    </Button>
+                    {isAdmin ? (
+                      <Button asChild variant="ghost" size="sm" className="flex-1">
+                        <Link to="/admin" onClick={() => setMobileNavOpen(false)}>
+                          Admin
+                        </Link>
+                      </Button>
+                    ) : (
+                      <Button asChild variant="ghost" size="sm" className="flex-1">
+                        <Link to="/dashboard/bookings" onClick={() => setMobileNavOpen(false)}>
+                          Bookings
+                        </Link>
+                      </Button>
+                    )}
                     <Button variant="outline" size="sm" className="flex-1" onClick={handleLogout}>
                       Log out
                     </Button>
