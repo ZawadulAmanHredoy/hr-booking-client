@@ -29,7 +29,9 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   register: async (input) => {
     const data = await authApi.register(input)
-    set({ user: data.user, isInitialized: true })
+    // Registration never issues session cookies — the account isn't verified yet, and only
+    // login/refresh actually authenticate. Setting `user` here made the nav look logged in
+    // (Dashboard/Bookings/Log out, RequireAuth routes reachable) with no real session behind it.
     return data.user
   },
 

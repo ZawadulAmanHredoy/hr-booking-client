@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { Plus, Trash2 } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { ArrowLeft, Plus, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -75,6 +76,7 @@ export function AvailabilityPage() {
 }
 
 function AvailabilityEditor({ availability }: { availability: Availability }) {
+  const navigate = useNavigate()
   const queryClient = useQueryClient()
   const [draft, setDraft] = useState<DraftState>(() => toDraft(availability))
   const [saved, setSaved] = useState(false)
@@ -146,6 +148,10 @@ function AvailabilityEditor({ availability }: { availability: Availability }) {
 
   return (
     <section className="mx-auto max-w-3xl px-4 py-10">
+      <Button variant="ghost" size="sm" className="mb-6" onClick={() => navigate(-1)}>
+        <ArrowLeft className="h-4 w-4" /> Back
+      </Button>
+
       <div className="mb-6 flex flex-col gap-1">
         <h1 className="text-3xl font-bold tracking-tight">Availability</h1>
         <p className="text-muted-foreground">

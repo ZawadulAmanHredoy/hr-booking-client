@@ -35,15 +35,15 @@ export function RootLayout() {
       <Button asChild variant="ghost" size="sm">
         <Link to="/dashboard/bookings">Bookings</Link>
       </Button>
-      <Button asChild variant="ghost" size="sm">
-        <Link to="/dashboard">Dashboard</Link>
-      </Button>
       <Button variant="outline" size="sm" onClick={handleLogout}>
         Log out
       </Button>
     </>
   ) : (
     <>
+      <Button asChild variant="ghost" size="sm">
+        <Link to="/join-as-hr">Join as HR</Link>
+      </Button>
       <Button asChild variant="ghost" size="sm">
         <Link to="/login">Log in</Link>
       </Button>
@@ -147,17 +147,17 @@ export function RootLayout() {
                         Bookings
                       </Link>
                     </Button>
-                    <Button asChild variant="ghost" size="sm" className="flex-1">
-                      <Link to="/dashboard" onClick={() => setMobileNavOpen(false)}>
-                        Dashboard
-                      </Link>
-                    </Button>
                     <Button variant="outline" size="sm" className="flex-1" onClick={handleLogout}>
                       Log out
                     </Button>
                   </>
                 ) : (
                   <>
+                    <Button asChild variant="ghost" size="sm" className="flex-1">
+                      <Link to="/join-as-hr" onClick={() => setMobileNavOpen(false)}>
+                        Join as HR
+                      </Link>
+                    </Button>
                     <Button asChild variant="ghost" size="sm" className="flex-1">
                       <Link to="/login" onClick={() => setMobileNavOpen(false)}>
                         Log in

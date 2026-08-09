@@ -31,7 +31,7 @@ export function RequireRole({ roles, children }: RoleGuardProps) {
   }
 
   if (!roles.includes(user.role)) {
-    return <Navigate to="/dashboard" state={{ from: location.pathname }} replace />
+    return <Navigate to="/" state={{ from: location.pathname }} replace />
   }
 
   return children

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useSearchParams } from 'react-router-dom'
-import { CalendarCheck, Link2, Video } from 'lucide-react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import { ArrowLeft, CalendarCheck, Link2, Video } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -20,6 +20,7 @@ const callbackReasons: Record<string, string> = {
 }
 
 export function IntegrationsPage() {
+  const navigate = useNavigate()
   const queryClient = useQueryClient()
   const [searchParams, setSearchParams] = useSearchParams()
   const [actionError, setActionError] = useState<string | null>(null)
@@ -61,6 +62,10 @@ export function IntegrationsPage() {
 
   return (
     <section className="mx-auto max-w-3xl px-4 py-10">
+      <Button variant="ghost" size="sm" className="mb-6" onClick={() => navigate(-1)}>
+        <ArrowLeft className="h-4 w-4" /> Back
+      </Button>
+
       <div className="mb-6 flex flex-col gap-1">
         <h1 className="text-3xl font-bold tracking-tight">Integrations</h1>
         <p className="text-muted-foreground">

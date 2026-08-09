@@ -4,6 +4,7 @@ import HomePage from '@/pages/HomePage'
 import NotFoundPage from '@/pages/NotFoundPage'
 import { LoginPage } from '@/pages/LoginPage'
 import { RegisterPage } from '@/pages/RegisterPage'
+import { JoinAsHrPage } from '@/pages/JoinAsHrPage'
 import { VerifyEmailPage } from '@/pages/VerifyEmailPage'
 import { ForgotPasswordPage } from '@/pages/ForgotPasswordPage'
 import { ResetPasswordPage } from '@/pages/ResetPasswordPage'
@@ -13,7 +14,6 @@ import { ProfileOnboardingPage } from '@/pages/ProfileOnboardingPage'
 import { ProfileManagePage } from '@/pages/ProfileManagePage'
 import { AvailabilityPage } from '@/pages/AvailabilityPage'
 import { IntegrationsPage } from '@/pages/IntegrationsPage'
-import { DashboardPage } from '@/pages/DashboardPage'
 import { BookingsPage } from '@/pages/BookingsPage'
 import { BookingDetailPage } from '@/pages/BookingDetailPage'
 import { RequireAuth, RequireRole, RedirectIfAuthed } from '@/components/auth/guards'
@@ -38,6 +38,14 @@ export const router = createBrowserRouter([
         element: (
           <RedirectIfAuthed>
             <RegisterPage />
+          </RedirectIfAuthed>
+        ),
+      },
+      {
+        path: 'join-as-hr',
+        element: (
+          <RedirectIfAuthed>
+            <JoinAsHrPage />
           </RedirectIfAuthed>
         ),
       },
@@ -90,14 +98,6 @@ export const router = createBrowserRouter([
           <RequireRole roles={['HR']}>
             <IntegrationsPage />
           </RequireRole>
-        ),
-      },
-      {
-        path: 'dashboard',
-        element: (
-          <RequireAuth>
-            <DashboardPage />
-          </RequireAuth>
         ),
       },
       {

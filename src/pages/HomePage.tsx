@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { useAuthStore } from '@/stores/auth'
 
 const features = [
   {
@@ -20,6 +21,8 @@ const features = [
 ]
 
 export default function HomePage() {
+  const user = useAuthStore((s) => s.user)
+
   return (
     <section className="mx-auto flex max-w-4xl flex-col items-center gap-10 px-4 py-16 text-center">
       <div className="flex flex-col items-center gap-4">
@@ -34,9 +37,22 @@ export default function HomePage() {
           <Button asChild size="lg">
             <Link to="/hr">Browse HR professionals</Link>
           </Button>
-          <Button asChild size="lg" variant="outline">
-            <Link to="/register">Create an account</Link>
-          </Button>
+          {user ? (
+            <Button asChild size="lg" variant="outline">
+              <Link to={user.role === 'HR' ? '/profile/manage' : '/dashboard/bookings'}>
+                Go to {user.role === 'HR' ? 'my profile' : 'my bookings'}
+              </Link>
+            </Button>
+          ) : (
+            <>
+              <Button asChild size="lg" variant="outline">
+                <Link to="/register">Create an account</Link>
+              </Button>
+              <Button asChild size="lg" variant="secondary">
+                <Link to="/join-as-hr">Join as HR</Link>
+              </Button>
+            </>
+          )}
         </div>
       </div>
 
