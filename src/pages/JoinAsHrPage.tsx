@@ -138,10 +138,9 @@ export function JoinAsHrPage() {
     return (
       <section className="mx-auto max-w-2xl px-4 py-16 text-center">
         <FormAlert variant="success">
-          Your consultant account was created. We sent a verification link to{' '}
-          <strong>{email}</strong>. Click it to activate your account, then log in — your profile is
-          already saved as a draft. Submit it for review from your profile page whenever you're
-          ready, and our team will publish it once it's approved.
+          Your consultant account was created — no email verification needed, you can log in right
+          away. Your profile is saved as a draft; submit it for review from your profile page
+          whenever you're ready, and our admin team will review it before it goes live.
         </FormAlert>
         <Button asChild variant="outline" className="mt-4">
           <Link to="/login">Go to login</Link>
