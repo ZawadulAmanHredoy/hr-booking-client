@@ -27,9 +27,17 @@ export function ProfileCard({ profile }: { profile: HRProfile }) {
     <Card className="flex flex-col transition-shadow hover:shadow-md">
       <CardHeader className="flex flex-row items-start gap-4">
         <Avatar>
-          <AvatarFallback>
-            {initials(profile.user?.firstName ?? '', profile.user?.lastName ?? '')}
-          </AvatarFallback>
+          {profile.profileImageUrl ? (
+            <img
+              src={profile.profileImageUrl}
+              alt={fullName}
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <AvatarFallback>
+              {initials(profile.user?.firstName ?? '', profile.user?.lastName ?? '')}
+            </AvatarFallback>
+          )}
         </Avatar>
         <div className="flex flex-col gap-1">
           <CardTitle className="text-lg">

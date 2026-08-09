@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -38,11 +39,29 @@ function ProfileOverview({ profile }: { profile: OwnHRProfile }) {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between gap-3">
-        <div className="flex flex-col gap-1">
-          <CardTitle className="text-xl">
-            {fullName ? `${fullName.firstName} ${fullName.lastName}` : 'Your profile'}
-          </CardTitle>
-          <p className="text-sm text-muted-foreground">{profile.headline}</p>
+        <div className="flex items-center gap-3">
+          <Avatar className="h-12 w-12">
+            {profile.profileImageUrl ? (
+              <img
+                src={profile.profileImageUrl}
+                alt={fullName ? `${fullName.firstName} ${fullName.lastName}` : 'Profile photo'}
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <AvatarFallback>
+                {fullName ? `${fullName.firstName.charAt(0)}${fullName.lastName.charAt(0)}` : '?'}
+              </AvatarFallback>
+            )}
+          </Avatar>
+          <div className="flex flex-col gap-1">
+            <CardTitle className="text-xl">
+              {fullName ? `${fullName.firstName} ${fullName.lastName}` : 'Your profile'}
+            </CardTitle>
+            <p className="text-sm text-muted-foreground">
+              {profile.headline}
+              {profile.companyName ? ` · ${profile.companyName}` : ''}
+            </p>
+          </div>
         </div>
         <Badge variant={profile.status === PROFILE_STATUS.PUBLISHED ? 'default' : 'secondary'}>
           {profile.status === PROFILE_STATUS.PUBLISHED ? 'Published' : 'Draft'}

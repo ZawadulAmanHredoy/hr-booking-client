@@ -1,4 +1,5 @@
 import { apiClient, getApiErrorMessage } from './client'
+import type { Currency, Specialization } from '@/lib/constants'
 
 export type UserRole = 'USER' | 'HR' | 'ADMIN' | 'SUPER_ADMIN'
 export type UserStatus = 'ACTIVE' | 'SUSPENDED'
@@ -33,6 +34,34 @@ export interface LoginInput {
   password: string
 }
 
+export interface WorkHistoryEntryInput {
+  company: string
+  role: string
+  startYear: number
+  endYear?: number
+  description?: string
+}
+
+export interface RegisterHrInput {
+  email: string
+  password: string
+  firstName: string
+  lastName: string
+  phone: string
+  profileImageUrl?: string
+  headline: string
+  bio: string
+  specializations: Specialization[]
+  yearsOfExperience: number
+  companyName: string
+  hourlyRateCents: number
+  currency: Currency
+  languages: string[]
+  city?: string
+  country?: string
+  workHistory: WorkHistoryEntryInput[]
+}
+
 function toError(message: string, cause: unknown): Error {
   return new Error(message, { cause })
 }
@@ -41,6 +70,18 @@ export async function register(input: RegisterInput): Promise<AuthResponseData> 
   try {
     const res = await apiClient.post<{ success: true; data: AuthResponseData }>(
       '/auth/register',
+      input,
+    )
+    return res.data.data
+  } catch (error) {
+    throw toError(getApiErrorMessage(error, 'Registration failed.'), error)
+  }
+}
+
+export async function registerHr(input: RegisterHrInput): Promise<AuthResponseData> {
+  try {
+    const res = await apiClient.post<{ success: true; data: AuthResponseData }>(
+      '/auth/register-hr',
       input,
     )
     return res.data.data

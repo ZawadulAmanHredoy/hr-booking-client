@@ -8,9 +8,17 @@ export interface ProfileUser {
 }
 
 export interface Certification {
-  title: string
-  issuer: string
-  year: number
+  name: string
+  issuer?: string
+  year?: number
+}
+
+export interface WorkHistoryEntry {
+  company: string
+  role: string
+  startYear: number
+  endYear?: number
+  description?: string
 }
 
 export interface HRProfile {
@@ -20,6 +28,7 @@ export interface HRProfile {
   bio: string
   specializations: Specialization[]
   yearsOfExperience: number
+  companyName?: string
   hourlyRateCents: number
   currency: Currency
   languages: string[]
@@ -27,6 +36,7 @@ export interface HRProfile {
   country?: string
   profileImageUrl?: string
   certifications: Certification[]
+  workHistory: WorkHistoryEntry[]
   isAvailable: boolean
   rating: number
   ratingCount: number
@@ -67,6 +77,7 @@ export interface UpsertProfileInput {
   bio: string
   specializations: Specialization[]
   yearsOfExperience: number
+  companyName?: string
   hourlyRateCents: number
   currency: Currency
   languages: string[]
@@ -74,6 +85,7 @@ export interface UpsertProfileInput {
   country?: string
   profileImageUrl?: string
   certifications?: Certification[]
+  workHistory?: WorkHistoryEntry[]
 }
 
 export interface UpsertProfileResult {

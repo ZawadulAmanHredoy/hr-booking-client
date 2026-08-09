@@ -76,9 +76,17 @@ export function ProfileDetailPage() {
       <Card>
         <CardHeader className="flex flex-row items-start gap-4">
           <Avatar className="h-14 w-14">
-            <AvatarFallback className="text-lg">
-              {initials(profile.user?.firstName, profile.user?.lastName)}
-            </AvatarFallback>
+            {profile.profileImageUrl ? (
+              <img
+                src={profile.profileImageUrl}
+                alt={fullName}
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <AvatarFallback className="text-lg">
+                {initials(profile.user?.firstName, profile.user?.lastName)}
+              </AvatarFallback>
+            )}
           </Avatar>
           <div className="flex flex-1 flex-col gap-1">
             <div className="flex flex-wrap items-center gap-2">
@@ -108,6 +116,7 @@ export function ProfileDetailPage() {
         <CardContent className="flex flex-col gap-6">
           <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted-foreground">
             <span>{profile.yearsOfExperience} years of experience</span>
+            {profile.companyName && <span>Currently at {profile.companyName}</span>}
             <span>Languages: {profile.languages.join(', ')}</span>
             {profile.city || profile.country ? (
               <span>Location: {[profile.city, profile.country].filter(Boolean).join(', ')}</span>
@@ -119,13 +128,36 @@ export function ProfileDetailPage() {
             <p className="whitespace-pre-line text-muted-foreground">{profile.bio}</p>
           </div>
 
+          {profile.workHistory.length > 0 && (
+            <div className="flex flex-col gap-3">
+              <h2 className="text-lg font-semibold">Experience</h2>
+              <ul className="flex flex-col gap-3 text-sm">
+                {profile.workHistory.map((entry, index) => (
+                  <li key={`${entry.company}-${entry.startYear}-${index}`}>
+                    <p className="font-medium">
+                      {entry.role} · {entry.company}
+                    </p>
+                    <p className="text-muted-foreground">
+                      {entry.startYear}–{entry.endYear ?? 'Present'}
+                    </p>
+                    {entry.description && (
+                      <p className="mt-0.5 text-muted-foreground">{entry.description}</p>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
           {profile.certifications.length > 0 && (
             <div className="flex flex-col gap-2">
               <h2 className="text-lg font-semibold">Certifications</h2>
               <ul className="flex flex-col gap-1.5 text-sm text-muted-foreground">
                 {profile.certifications.map((cert) => (
-                  <li key={`${cert.title}-${cert.year}`}>
-                    {cert.title} · {cert.issuer} · {cert.year}
+                  <li key={`${cert.name}-${cert.year}`}>
+                    {cert.name}
+                    {cert.issuer ? ` · ${cert.issuer}` : ''}
+                    {cert.year ? ` · ${cert.year}` : ''}
                   </li>
                 ))}
               </ul>
