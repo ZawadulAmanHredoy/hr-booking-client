@@ -467,7 +467,7 @@ export function ProfileOnboardingPage() {
         <p className="text-muted-foreground">
           {profile
             ? 'Update your public profile details.'
-            : 'Create your public profile to start offering consultations. You can publish it later.'}
+            : "Create your profile to start offering consultations. Submit it for review whenever you're ready — an admin will approve it before it goes live."}
         </p>
       </div>
 

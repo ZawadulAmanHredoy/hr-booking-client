@@ -140,7 +140,8 @@ export function JoinAsHrPage() {
         <FormAlert variant="success">
           Your consultant account was created. We sent a verification link to{' '}
           <strong>{email}</strong>. Click it to activate your account, then log in — your profile is
-          already saved as a draft and ready to publish.
+          already saved as a draft. Submit it for review from your profile page whenever you're
+          ready, and our team will publish it once it's approved.
         </FormAlert>
         <Button asChild variant="outline" className="mt-4">
           <Link to="/login">Go to login</Link>
@@ -154,7 +155,8 @@ export function JoinAsHrPage() {
       <div className="mb-6 flex flex-col gap-1">
         <h1 className="text-3xl font-bold tracking-tight">Join as an HR professional</h1>
         <p className="text-muted-foreground">
-          Create your consultant account and public profile in one step. You can publish it later.
+          Create your consultant account and profile in one step. Submit it for review whenever
+          you're ready — an admin will approve it before it goes live.
         </p>
       </div>
 
